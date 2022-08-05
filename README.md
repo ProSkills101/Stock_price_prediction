@@ -12,6 +12,7 @@ In addition to having an environment wth python (I use python 3.9.12 for referen
 * yfinance 0.1.70
 * dash 2.5.0
 * plotly 5.6.0
+* quandl 3.2.0
 
 Still, though, it is highly recommended that you update the packages to the latest version possible.
 
@@ -36,6 +37,7 @@ The stock displayed will be Tesla (TSLA) by default. To view the activity of oth
 ## Future updates
 
 * Prophet
+* Incorporation of volume into main chart
 
 ## References
 
