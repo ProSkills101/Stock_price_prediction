@@ -34,9 +34,13 @@ You should be greeted with something like this:
 
 The stock displayed will be Tesla (TSLA) by default. To view the activity of other stocks, simply input the **ticker** (not the name) of the company in the search box and press enter.
 
+## Updates
+
+* Moved to Google Colab! (Link: https://colab.research.google.com/drive/1_OB65l9KkxEuSwESgG0AIP36z7lTLIA3?hl=en#scrollTo=u3PsCF-8FaSA)
+
 ## Future updates
 
-* Prophet
+* Bug fixing (a lot)
 * Incorporation of volume into main chart
 
 ## References
