@@ -11,8 +11,11 @@ from dash import Dash, dcc, html, Input, Output
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from sklearn.preprocessing import MinMaxScaler
+from jupyter_dash import JupyterDash
 
-app = Dash()
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = JupyterDash(__name__, external_stylesheets=external_stylesheets)
+
 app.title='Stock Visualization'
 app.layout = html.Div(children=[
     html.H1('Stock Visualization Dashboard'),
@@ -145,4 +148,4 @@ def update_value(input_sid):
 
 #ADDRESS = '140.113.195.226'
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8052)      
+    app.run_server(debug=True, port=8052)   
