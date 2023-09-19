@@ -44,7 +44,7 @@ Major update 2
   
 ## Notes
 
-Note 1: It has been discovered that the Google Colab version may be reliant on pre-existing files. Fixing is in progress. In the meantime, the code version will also be renewed frequently in order for updates to reach everyone.
+It has been discovered that the Google Colab version may be reliant on pre-existing files. Fixing is in progress. In the meantime, the code version will also be renewed frequently in order for updates to reach everyone.
   
 ## Future updates
 
