@@ -4,7 +4,7 @@ A beta model (referenced from multiple others) used for gathering stock infromat
 
 ## Requirements
 
-In addition to having an environment wth python (I use python 3.9.12 for reference), the following packages are also required:
+In addition to having an environment with python (I use python 3.9.12 for reference), the following packages are also required:
 * numpy 1.21.5
 * pandas 1.4.2
 * pandas_datareader 0.10.0
@@ -36,12 +36,21 @@ The stock displayed will be Tesla (TSLA) by default. To view the activity of oth
 
 ## Updates
 
+Major update 1
 * Moved to Google Colab! (Link: https://colab.research.google.com/drive/1_OB65l9KkxEuSwESgG0AIP36z7lTLIA3?hl=en#scrollTo=u3PsCF-8FaSA)
 
+Major update 2
+* Stylistic improvements along with large amounts of bug fixes.
+  
+## Notes
+
+Note 1: It has been discovered that the Google Colab version may be reliant on pre-existing files. Fixing is in progress. In the meantime, the code version will also be renewed frequently in order for updates to reach everyone.
+  
 ## Future updates
 
-* Bug fixing (a lot)
-* Incorporation of volume into main chart
+* (Bugless) Incorporation of fbprophet and other existing prediction mechanisms
+* Incorporation of volume into the main chart
+* *
 
 ## References
 
