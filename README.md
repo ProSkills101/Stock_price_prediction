@@ -48,9 +48,10 @@ Note 1: It has been discovered that the Google Colab version may be reliant on p
   
 ## Future updates
 
-* (Bugless) Incorporation of fbprophet and other existing prediction mechanisms
+* (Bugless) Incorporation of other existing prediction/visualization mechanisms
+* * fbprophet
+  * yfinance
 * Incorporation of volume into the main chart
-* *
 
 ## References
 
