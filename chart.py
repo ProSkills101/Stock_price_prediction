@@ -7,13 +7,15 @@ yf.pdr_override()
 import pandas_ta as ta
 #import seaborn as sns
 import datetime as datetime
-from dash import Dash, dcc, html, Input, Output
+from dash import Dash, dash_table, dcc, html, Input, Output
+from dash.exceptions import PreventUpdate
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from sklearn.preprocessing import MinMaxScaler
 from jupyter_dash import JupyterDash
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css',
+                        'https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css']
 app = JupyterDash(__name__, external_stylesheets=external_stylesheets)
 
 app.title='Stock Visualization'
@@ -21,16 +23,35 @@ app.layout = html.Div(children=[
     html.H1('Stock Visualization Dashboard'),
     html.H4('Please enter the stock name'),
     dcc.Input(id='input', value='TSLA', type='text'),
-    html.Div(id='output-graph')
-    ])
-
+    html.Div(id='output-graph'),
+    html.Hr(),  # Add a horizontal line to separate the chart and table
+    html.H4('Oscillators Table'),
+    dash_table.DataTable(id='oscillator-table',
+                         columns=[{'name': 'Oscillator', 'id': 'Oscillator'},
+                                  {'name': 'Value', 'id': 'Value'},
+                                  {'name': 'Action', 'id': 'Action'}] ),
+    html.H4('Moving Averages Table'),
+    dash_table.DataTable(id='ma-table',
+                         columns=[{'name': 'Moving Averages', 'id': 'Moving Averages'},
+                                  {'name': 'Value', 'id': 'Value'},
+                                  {'name': 'Action', 'id': 'Action'}] ),
+    html.H6("Note: There are no overall evaluations for moving averages as it highly depends on the investent timeframe.")
+])
 
 @app.callback(
     Output(component_id='output-graph', component_property='children'),
-    Input(component_id='input', component_property='value')
+    Output(component_id='oscillator-table', component_property='data'),  # Updated ID
+    Output(component_id='ma-table', component_property='data'),  # Updated ID
+    Input(component_id='input', component_property='value'),
+    Input(component_id='input', component_property='n_submit')
 )
 
-def update_value(input_sid): 
+def update_value(input_sid, n_submit): 
+    print("Input Value:", input_sid)
+    print("n_submit:", n_submit)
+    if n_submit is None:
+        raise PreventUpdate  # No "Enter" key press, do not update
+
     # Reads stock prices from 1st January 2022 
     #start = dt.datetime(2022, 1, 1)  
     #end = dt.datetime.now() 
@@ -39,9 +60,6 @@ def update_value(input_sid):
     end_date = datetime.datetime.now().strftime('%Y-%m-%d')
     start_date = (datetime.datetime.now()- datetime.timedelta(days=n_year*365)).strftime('%Y-%m-%d')
     df = pdr.get_data_yahoo(sid, start=start_date, end=end_date)
-
-    # Read stock data from yahoo's finance API from start to end  
-    #df = web.DataReader(input_data, 'yahoo', start, end) 
 
     # Define periods
     k_period = 14
@@ -144,7 +162,111 @@ def update_value(input_sid):
     )
     fig.update_layout(layout)   
 
-    return dcc.Graph(id='demo', figure=fig)
+    # Table creation
+    os_actions = []
+    os_score = 0
+
+    rsi = ta.rsi(df['close']) # RSI
+    latest_rsi = round(rsi.iloc[-1], 2)
+    if (latest_rsi > 80): os_actions.append("Strong sell"); os_score -= 2
+    elif (latest_rsi > 60): os_actions.append("Sell"); os_score -= 1
+    elif (latest_rsi > 40): os_actions.append("Neutral"); 
+    elif (latest_rsi > 20): os_actions.append("Buy"); os_score += 1
+    else: os_actions.append("Strong buy"); os_score += 2
+
+    latest_stoch = round(df['%k'].iloc[-1], 2) # Stochastic, referenced from previous data table
+    if (latest_stoch > 80): os_actions.append("Sell"); os_score -= 1
+    if (latest_stoch < 20): os_actions.append("Buy"); os_score += 1
+    else: os_actions.append("Neutral")
+
+    willr = ta.willr(df['high'], df['low'], df['close']) # Williams Percent Range, 14 days
+    latest_willr = round(willr.iloc[-1], 2)
+    if (latest_willr > -20): os_actions.append("Sell"); os_score -= 1
+    if (latest_willr < -80): os_actions.append("Buy"); os_score += 1
+    else: os_actions.append("Neutral")
+
+    macd = ta.macd(df['close']) # MACD
+    latest_macd = round(macd.iloc[-1], 2)
+    float_macd = float(str(latest_macd)[61:65])
+    if (float_macd >= 0.15): os_actions.append("Strong buy"); os_score += 2
+    elif (float_macd >= 0.05):  os_actions.append("Buy"); os_score += 1
+    elif (float_macd <= -0.15): os_actions.append("Strong sell"); os_score -= 2
+    elif (float_macd <= -0.05): os_actions.append("Sell"); os_score -= 1
+    else: os_actions.append("Neutral")
+
+    cci = ta.cci(df['high'], df['low'], df['close']) # CCI
+    latest_cci = round(cci.iloc[-1], 2)
+
+    if (latest_cci > 100): os_actions.append("Sell"); os_score -= 1
+    elif (latest_cci < -100):  os_actions.append("Buy"); os_score += 1
+    else: os_actions.append("Neutral")
+
+    adx = ta.adx(df['high'], df['low'], df['close']) # ADX
+    latest_adx = round(adx.iloc[-1], 2)
+    float_adx = float(str(latest_adx)[8:15])
+    if (os_score == 0 or abs(float_adx) < 25): os_actions.append("Neutral")
+    elif (os_score > 0):
+        if (float_adx > 50): os_actions.append("Strong buy"); os_score += 2
+        else: os_actions.append("Buy"); os_score += 1
+    else:
+        if (float_adx > 50): os_actions.append("Strong sell"); os_score -= 2
+        else: os_actions.append("Sell"); os_score -= 1
+
+    if (os_score >= 5): os_action = "Strong buy"
+    elif (os_score >= 3): os_action = "Buy"
+    elif (os_score <= -5): os_action = "Strong sell"
+    elif (os_score <= -3): os_action = "Sell"
+    else: os_action = "Neutral"
+
+    # Define the DataTable component
+    oscillator_data = pd.DataFrame({
+        'Oscillator': ['RSI', 'Stochastic', 'Williams Percent Range', 'MACD', 'CCI', 'ADX'],  # Add more indicators as needed
+        'Value': [latest_rsi, latest_stoch, latest_willr, float_macd, latest_cci, float_adx], 
+        'Action': os_actions 
+    })
+    oscillator_data = oscillator_data.sort_values("Oscillator", ascending = True)
+    oscillator_data.loc[6] = ['Overall', os_score , os_action]
+
+    sma_10 = ta.sma(df['close'], length=10, append=False)
+    latest_sma_10 = round(sma_10.iloc[-1], 2)
+    sma_20 = ta.sma(df['close'], length=20, append=False)
+    latest_sma_20 = round(sma_20.iloc[-1], 2)
+    sma_50 = ta.sma(df['close'], length=50, append=False)
+    latest_sma_50 = round(sma_50.iloc[-1], 2)
+    sma_100 = ta.sma(df['close'], length=100, append=False)
+    latest_sma_100 = round(sma_100.iloc[-1], 2)
+    ema_10 = ta.ema(df['close'], length=10, append=False)
+    latest_ema_10 = round(ema_10.iloc[-1], 2)
+    ema_20 = ta.ema(df['close'], length=20, append=False)
+    latest_ema_20 = round(ema_20.iloc[-1], 2)
+    ema_50 = ta.ema(df['close'], length=50, append=False)
+    latest_ema_50 = round(ema_50.iloc[-1], 2)
+    ema_100 = ta.ema(df['close'], length=100, append=False)
+    latest_ema_100 = round(ema_100.iloc[-1], 2)
+    hma = ta.hma(df['close'], length=16, add_to_input=False)
+    latest_hma = round(hma.iloc[-1], 2)
+    
+    # Gives recommendations to buy or sell based on relationship between Moving average and Closing price
+    values = [latest_sma_10, latest_ema_10, latest_sma_20, latest_ema_20, latest_sma_50, 
+                  latest_ema_50, latest_sma_100, latest_ema_100, latest_hma] 
+    ma_actions = []
+    close = df['close'].iloc[-1]
+    for ma in values:
+        diff = ((close-ma)/ma)
+        if (diff >= 0.05): ma_actions.append("Strong buy")
+        elif (diff >= 0.02):  ma_actions.append("Buy")
+        elif (diff <= -0.05): ma_actions.append("Strong sell")
+        elif (diff <= -0.02): ma_actions.append("Sell")
+        else: ma_actions.append("Neutral")
+
+    ma_data = pd.DataFrame({
+        'Moving Averages': ['SMA (10 days)', 'EMA (10 days)', 'SMA (20 days)', 'EMA (20 days)', 
+                            'SMA (50 days)', 'EMA (50 days)', 'SMA (100 days)', 'EMA (100 days)', 
+                            'Hull Moving Average'], 
+        'Value': values, 'Action': ma_actions
+    })
+    
+    return dcc.Graph(id='demo', figure=fig), oscillator_data.to_dict('records'), ma_data.to_dict('records')
 
 #ADDRESS = '140.113.195.226'
 if __name__ == '__main__':
