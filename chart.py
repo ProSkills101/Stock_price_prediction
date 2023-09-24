@@ -45,7 +45,7 @@ app.layout = html.Div(children=[
     Input(component_id='input', component_property='value'),
 )
 
-def update_value(input_sid, n_submit): 
+def update_value(input_sid): 
     # Reads stock prices from 1st January 2022 
     #start = dt.datetime(2022, 1, 1)  
     #end = dt.datetime.now() 
