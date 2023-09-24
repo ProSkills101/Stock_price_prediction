@@ -43,15 +43,9 @@ app.layout = html.Div(children=[
     Output(component_id='oscillator-table', component_property='data'),  # Updated ID
     Output(component_id='ma-table', component_property='data'),  # Updated ID
     Input(component_id='input', component_property='value'),
-    Input(component_id='input', component_property='n_submit')
 )
 
 def update_value(input_sid, n_submit): 
-    print("Input Value:", input_sid)
-    print("n_submit:", n_submit)
-    if n_submit is None:
-        raise PreventUpdate  # No "Enter" key press, do not update
-
     # Reads stock prices from 1st January 2022 
     #start = dt.datetime(2022, 1, 1)  
     #end = dt.datetime.now() 
