@@ -53,7 +53,7 @@ It has been discovered that the Google Colab version may be reliant on pre-exist
 
 * Code automatically gives an error while entering the ticker (because the code reads the incomplete ticker that is still being typed). Does not affect functionality but is slightly annoying. Should be fixed soon.
 * (Bugless) Incorporation of other existing prediction/visualization mechanisms
-* * fbprophet
+  * fbprophet
   * yfinance
 * Incorporation of volume into the main chart
 
