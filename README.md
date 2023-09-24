@@ -35,7 +35,27 @@ The stock displayed will be Tesla (TSLA) by default. To view the activity of oth
 
 ## Major updates
 
+Major update 1
+* Moved to Google Colab! (Link: https://colab.research.google.com/drive/1_OB65l9KkxEuSwESgG0AIP36z7lTLIA3?hl=en#scrollTo=u3PsCF-8FaSA)
 
+Major update 2
+* Stylistic improvements along with large amounts of bug fixes.
+* Incorporation of volume into main chart
+
+Major update 3
+* Indicators and analysis! Been working on this for a really long time.
+
+## Notes
+
+It has been discovered that the Google Colab version may be reliant on pre-existing files. Fixing is in progress. In the meantime, the code version will also be renewed frequently in order for updates to reach everyone.
+
+## Future updates
+
+* Code automatically gives an error while entering the ticker (because the code reads the incomplete ticker that is still being typed). Does not affect functionality but is slightly annoying. Should be fixed soon.
+* (Bugless) Incorporation of other existing prediction/visualization mechanisms
+* * fbprophet
+  * yfinance
+* Incorporation of volume into the main chart
 
 ## References
 
