@@ -209,9 +209,9 @@ def update_value(input_sid, n_submit):
         if (float_adx > 50): os_actions.append("Strong sell"); os_score -= 2
         else: os_actions.append("Sell"); os_score -= 1
 
-    if (os_score >= 5): os_action = "Strong buy"
+    if (os_score >= 6): os_action = "Strong buy"
     elif (os_score >= 3): os_action = "Buy"
-    elif (os_score <= -5): os_action = "Strong sell"
+    elif (os_score <= -6): os_action = "Strong sell"
     elif (os_score <= -3): os_action = "Sell"
     else: os_action = "Neutral"
 
@@ -265,6 +265,5 @@ def update_value(input_sid, n_submit):
     
     return dcc.Graph(id='demo', figure=fig), oscillator_data.to_dict('records'), ma_data.to_dict('records')
 
-#ADDRESS = '140.113.195.226'
 if __name__ == '__main__':
     app.run_server(debug=True, port=8052)   
