@@ -29,7 +29,7 @@ Simply ctrl+click to go to the website. In case it does not work, though, simply
 
 You should be greeted with something like this:
 
-![](https://github.com/ProSkills101/Stock_price_prediction/blob/main/Screenshot%202023-09-24%20175507.png))
+![](https://github.com/ProSkills101/Stock_price_prediction/blob/main/Screenshot%202023-09-24%20175507.png)
 
 Simply press enter to view the stock! The stock displayed will be Tesla (TSLA) by default. To view the activity of other stocks, simply input the **ticker** (not the name) of the company in the search box and press enter.
 
@@ -55,7 +55,6 @@ It has been discovered that the Google Colab version may be reliant on pre-exist
 * (Bugless) Incorporation of other existing prediction/visualization mechanisms
   * fbprophet
   * yfinance
-* Incorporation of volume into the main chart
 
 ## References
 
